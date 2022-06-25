@@ -1,60 +1,33 @@
 import type { NextPage } from "next";
 import { getCsrfToken, signIn, useSession } from 'next-auth/react';
-import Head from 'next/head';
 import { SiweMessage } from 'siwe';
 import { useAccount, useNetwork, useSignMessage } from 'wagmi';
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-const Create: NextPage = () => {
-  const { data: account } = useAccount();
-  const { activeChain } = useNetwork();
-  const { signMessageAsync } = useSignMessage();
-  const { data: session } = useSession();
+import Connect from '../../components/connect';
+import CreateDistribution from '../../components/create-distribution';
+import SiweButton from '../../components/siwe-button';
+import Full from '../../layouts/full';
 
-  const handleLogin = async () => {
-    if (account && activeChain) {
-      try {
-        const message = new SiweMessage({
-          domain: window.location.host,
-          address: account.address,
-          statement: "Sign in to Worktree.",
-          uri: window.location.origin,
-          version: "1",
-          chainId: activeChain.id,
-          nonce: await getCsrfToken(),
-        });
-        const signature = await signMessageAsync({
-          message: message.prepareMessage(),
-        });
-        signIn("credentials", {
-          message: JSON.stringify(message),
-          redirect: false,
-          signature,
-        });
-      } catch (error) {
-        window.alert(error);
-      }
-    }
-  };
+const Create: NextPage = () => {
+  const { data: session } = useSession();
 
   return (
     <div>
-      <main>
-        <h1>Create a distribution</h1>
+      <Full>
         <div>
-          <ConnectButton />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-          >
-            Sign in with Ethereum
-          </button>
-          <div>{JSON.stringify(session)}</div>
+          <Connect />
+          <div className="py-8 px-16 bg-zinc-100 shadow-md rounded-md">
+            <h2 className="text-center text-2xl text-green-600 font-bold mb-8">
+              Create a distribution
+            </h2>
+            <div className="flex flex-row place-content-center">
+              {session ? <CreateDistribution /> : <SiweButton />}
+            </div>
+          </div>
         </div>
-      </main>
+      </Full>
     </div>
   );
 };

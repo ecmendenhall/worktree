@@ -8,6 +8,8 @@ import "../interfaces/IClaimModule.sol";
 contract ERC20Claim is IClaimModule {
     using SafeERC20 for IERC20;
 
+    event Claim(address recipient, uint256 amount);
+
     IERC20 public token;
     uint256 public claimAmount;
     address public tree;
@@ -26,6 +28,7 @@ contract ERC20Claim is IClaimModule {
     }
 
     function claim(address recipient) public onlyTree {
+        emit Claim(recipient, claimAmount);
         token.safeTransfer(recipient, claimAmount);
     }
 }

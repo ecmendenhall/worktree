@@ -12,6 +12,7 @@ contract WorktreeFactoryTest is Test {
     WorktreeFactory internal factory;
     MockERC20 internal token;
 
+    bytes32 internal constant salt = keccak256("salt");
     bytes32 internal constant root = keccak256("root");
     uint256 internal constant claimAmount = 100 ether;
     address internal constant nonOwner = address(0x42);
@@ -30,8 +31,24 @@ contract WorktreeFactoryTest is Test {
         (
             address tree, /* address claimModule */
 
-        ) = factory.createERC20(root, token, claimAmount);
-        assertEq(tree, address(0xD457ECDAD18BA6917097BcA0c5A1D6A97da8C26a));
+        ) = factory.createERC20(salt, root, token, claimAmount);
+        assertEq(tree, address(0x51592BFb5eC2B63d3B9386CD7061cdBEC13Fa30B));
+    }
+
+    function testCreateERC20TreeGeneratedTreeAddressMatchesPredictedAddress()
+        public
+    {
+        (address treePredicted, ) = factory.getCreateERC20Addresses(
+            salt,
+            root,
+            token,
+            claimAmount
+        );
+        (
+            address tree, /* address claimModule */
+
+        ) = factory.createERC20(salt, root, token, claimAmount);
+        assertEq(tree, treePredicted);
     }
 
     function testCreateERC20TreeReturnsClaimModuleAddress() public {
@@ -39,18 +56,36 @@ contract WorktreeFactoryTest is Test {
             ,
             /* address tree */
             address claimModule
-        ) = factory.createERC20(root, token, claimAmount);
+        ) = factory.createERC20(salt, root, token, claimAmount);
         assertEq(
             claimModule,
-            address(0xdd36aa107BcA36Ba4606767D873B13B4770F3b12)
+            address(0x0ba866D20e73305ba6800D247B1894d9cbe42027)
         );
+    }
+
+    function testCreateERC20TreeGeneratedClaimModuleAddressMatchesPredictedClaimModuleAddress()
+        public
+    {
+        (, address claimModulePredicted) = factory.getCreateERC20Addresses(
+            salt,
+            root,
+            token,
+            claimAmount
+        );
+        (, address claimModule) = factory.createERC20(
+            salt,
+            root,
+            token,
+            claimAmount
+        );
+        assertEq(claimModule, claimModulePredicted);
     }
 
     function testCreateERC20TreeReturnedTreeHasVerifier() public {
         (
             address treeAddress, /* address claimModule */
 
-        ) = factory.createERC20(root, token, claimAmount);
+        ) = factory.createERC20(salt, root, token, claimAmount);
         IWorktree tree = IWorktree(treeAddress);
         assertEq(address(tree.verifier()), address(verifier));
     }
@@ -59,7 +94,7 @@ contract WorktreeFactoryTest is Test {
         (
             address treeAddress, /* address claimModule */
 
-        ) = factory.createERC20(root, token, claimAmount);
+        ) = factory.createERC20(salt, root, token, claimAmount);
         IWorktree tree = IWorktree(treeAddress);
 
         bytes32 newRoot = keccak256("new root");

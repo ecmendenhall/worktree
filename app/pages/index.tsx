@@ -1,6 +1,9 @@
 import type { NextPage } from "next";
 import Head from 'next/head';
 
+import MenuCard from '../components/menu-card';
+import Full from '../layouts/full';
+
 const Home: NextPage = () => {
   return (
     <div>
@@ -12,9 +15,25 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <h1>Worktree</h1>
-      </main>
+      <Full>
+        <div className="grid md:grid-cols-3 md:grid-rows-1 gap-4 grid-cols-1">
+          <MenuCard
+            title="Create"
+            description="Create a new contributor distribution"
+            url="/distributions/create"
+          />
+          <MenuCard
+            title="Register"
+            description="Register as a project contributor"
+            url="/distributions/register"
+          />
+          <MenuCard
+            title="Claim"
+            description="Claim a contributor distribution"
+            url="/distributions/register"
+          />
+        </div>
+      </Full>
     </div>
   );
 };
