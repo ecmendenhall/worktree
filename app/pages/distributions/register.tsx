@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { useSession } from 'next-auth/react';
 
-import CreateCommitment from "../../components/create-commitment";
-import GithubButton from "../../components/github-button";
-import Full from "../../layouts/full";
+import CreateCommitment from '../../components/create-commitment';
+import GithubButton from '../../components/github-button';
+import Full from '../../layouts/full';
 
 const Register: NextPage = () => {
   const { data: session } = useSession();
@@ -24,7 +24,6 @@ const Register: NextPage = () => {
               )}
             </div>
           </div>
-          {JSON.stringify(session)}
         </div>
       </Full>
     </div>

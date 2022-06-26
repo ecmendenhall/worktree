@@ -4,7 +4,7 @@ interface Props {
 
 const Full = ({ children }: Props) => {
   return (
-    <div>
+    <div className="max-w-screen-xl m-auto">
       <header className="text-center my-8">
         <h1 className="text-4xl font-extrabold">
           <a href="/">

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getToken } from "next-auth/jwt";
+import { getToken } from 'next-auth/jwt';
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL || "",
@@ -29,7 +29,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           username: username,
           public_id: publicId,
         });
-        console.log(commitmentResponse);
         return res.status(201).end();
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
@@ -38,6 +37,25 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
     } else {
       return res.status(401).end();
+    }
+  } else if (req.method == "GET") {
+    try {
+      const { address } = req.query;
+      const distroResponse = await supabase
+        .from("distributions")
+        .select()
+        .eq("tree_address", address);
+      const distroBody = distroResponse.body || [];
+      const { id } = distroBody[0];
+      const commitmentsResponse = await supabase
+        .from("commitments")
+        .select()
+        .eq("distribution_id", id);
+      return res.status(200).json({ commitments: commitmentsResponse.body });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.log(e);
+      return res.status(500).json({ message });
     }
   }
   return res.status(404).end();

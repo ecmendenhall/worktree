@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
-import { useNetwork } from "wagmi";
+import { useSession } from 'next-auth/react';
+import { useNetwork } from 'wagmi';
 
-import Connect from "../../components/connect";
-import CreateDistribution from "../../components/create-distribution";
-import SiweButton from "../../components/siwe-button";
-import Full from "../../layouts/full";
+import Connect from '../../components/connect';
+import CreateDistribution from '../../components/create-distribution';
+import SiweButton from '../../components/siwe-button';
+import Full from '../../layouts/full';
 
 const Create: NextPage = () => {
   const { activeChain: chain } = useNetwork();
@@ -28,7 +28,6 @@ const Create: NextPage = () => {
               )}
             </div>
           </div>
-          {JSON.stringify(session)}
         </div>
       </Full>
     </div>

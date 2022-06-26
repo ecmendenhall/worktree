@@ -27,7 +27,7 @@ contract Worktree is IWorktree, Ownable {
         claimModule = _claimModule;
     }
 
-    function claim(bytes calldata proof, bytes32 nullifierHash) public {
+    function claim(bytes memory proof, bytes32 nullifierHash) public {
         if (uint256(nullifierHash) >= SNARK_FIELD) {
             revert InvalidNullifierHash();
         }
