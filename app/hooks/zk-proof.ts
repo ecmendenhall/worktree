@@ -5,7 +5,7 @@ import {
 } from 'zkp-merkle-airdrop-lib';
 
 import commitments from '../pages/api/distributions/[address]/commitments';
-import { generateRoot, generateTree } from '../utils/merkle-tree';
+import { generateTree } from '../utils/merkle-tree';
 
 interface ProofState {
   error?: Error;
@@ -79,7 +79,6 @@ export default function useZKProof({
           `/api/distributions/${distributionAddress}/commitments`
         );
         const commitments = await res.json();
-        console.log("Commitments: ", commitments);
         return generateTree(commitments.commitments);
       }
     },
@@ -128,8 +127,6 @@ export default function useZKProof({
       ];
       for (const treeInfo of merkleTrees) {
         const leafExists = treeInfo.merkleTree.leafExists(BigInt(commitment));
-        console.log("commitment: ", commitment);
-        console.log("leafExists: ", leafExists);
         if (leafExists) {
           return treeInfo;
         }
@@ -146,11 +143,6 @@ export default function useZKProof({
   );
 
   const generate = useCallback(() => {
-    console.log("isReady: ", isReady);
-    console.log("merkleTreeInfo: ", merkleTreeInfo);
-    console.log("key: ", key);
-    console.log("secret: ", secret);
-    console.log("account: ", account);
     if (isReady && merkleTreeInfo && key && secret && account) {
       // the last 2 characters represent the MSB which are removed by the
       // pedersenHash function when creating the commitment (public ID). To

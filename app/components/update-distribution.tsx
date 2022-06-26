@@ -4,7 +4,7 @@ import { useQuery } from 'react-query';
 import { useContractWrite } from 'wagmi';
 
 import contracts from '../config/contracts';
-import { generateRoot, generateTree } from '../utils/merkle-tree';
+import { generateTree } from '../utils/merkle-tree';
 
 interface Commitment {
   username: string;
