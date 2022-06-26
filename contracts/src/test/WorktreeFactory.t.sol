@@ -32,7 +32,7 @@ contract WorktreeFactoryTest is Test {
             address tree, /* address claimModule */
 
         ) = factory.createERC20(salt, root, token, claimAmount);
-        assertEq(tree, address(0x51592BFb5eC2B63d3B9386CD7061cdBEC13Fa30B));
+        assertEq(tree, address(0x62b0cAd3C845263ceD56E87d16130493339Ea859));
     }
 
     function testCreateERC20TreeGeneratedTreeAddressMatchesPredictedAddress()
