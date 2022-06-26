@@ -12,7 +12,7 @@ interface IWorktree {
 
     function root() external returns (bytes32);
 
-    function claim(bytes calldata proof, bytes32 nullifierHash) external;
+    function claim(bytes memory proof, bytes32 nullifierHash) external;
 
     function updateRoot(bytes32 newRoot) external;
 }

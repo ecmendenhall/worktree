@@ -139,6 +139,9 @@ const ClaimDistribution = () => {
               onClick={async () => {
                 await claim.writeAsync({
                   args: [proof, key],
+                  overrides: {
+                    gasLimit: 20_000_000,
+                  },
                 });
               }}
             >

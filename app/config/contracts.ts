@@ -4,7 +4,7 @@ const contracts = {
   factory: {
     address: {
       [chain.polygonMumbai.id]: "0xe203d2b0b42ceb8827760963da2d7c051411e47b",
-      [chain.hardhat.id]: "0xa513e6e4b8f2a923d98304ec87f64353c4d5c853",
+      [chain.hardhat.id]: "0x0165878a594ca255338adfa4d48449f69242eb8f",
     },
     abi: [
       "event NewTree(bytes32 salt, address tree, address claimModule)",
