@@ -1,18 +1,39 @@
 import { randomBytes } from 'crypto';
-import {
-    formatBytes32String, getAddress, getCreate2Address, keccak256, parseUnits
-} from 'ethers/lib/utils';
+import { ethers } from 'ethers';
+import { formatBytes32String, parseUnits } from 'ethers/lib/utils';
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useContractEvent, useContractWrite, useToken } from 'wagmi';
 
 import contracts from '../config/contracts';
+
+interface Props {
+  chainId: number;
+}
+
+interface Distribution {
+  treeAddress: string;
+  claimAddress: string;
+  chainId: number;
+}
 
 const getSalt = () => {
   return `0x${randomBytes(32).toString("hex")}`;
 };
 
-const CreateDistribution = () => {
+const saveDistribution = async (distribution: Distribution) => {
+  const { treeAddress, claimAddress, chainId } = distribution;
+  const res = await fetch("/api/distributions/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ treeAddress, claimAddress, chainId }),
+  });
+  return res.status;
+};
+
+const CreateDistribution = ({ chainId }: Props) => {
   const [salt] = useState(getSalt());
   const [repoName, setRepoName] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
@@ -20,6 +41,7 @@ const CreateDistribution = () => {
   const [amountComplete, setAmountComplete] = useState(false);
   const [treeAddress, setTreeAddress] = useState("");
   const [claimAddress, setClaimAddress] = useState("");
+  const [distributionSaved, setDistributionSaved] = useState(false);
   const { data: token, refetch: fetchToken } = useToken({
     address: tokenAddress,
     enabled: false,
@@ -37,10 +59,15 @@ const CreateDistribution = () => {
     },
     { enabled: false }
   );
+  const save = useMutation(saveDistribution, {
+    onSuccess: () => {
+      setDistributionSaved(true);
+    },
+  });
   const {
     isLoading: createDistributionIsLoading,
     data: createDistributionResponse,
-    write: createDistribution,
+    writeAsync: createDistribution,
   } = useContractWrite(
     {
       addressOrName: contracts.factory.address,
@@ -61,6 +88,11 @@ const CreateDistribution = () => {
       if (createdSalt === salt) {
         setTreeAddress(treeAddress);
         setClaimAddress(claimAddress);
+        save.mutate({
+          treeAddress,
+          claimAddress,
+          chainId,
+        });
       }
     }
   );
@@ -80,7 +112,7 @@ const CreateDistribution = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col lg:w-1/2">
       <div className="mb-4">
         <label className="block font-bold" htmlFor="repository">
           Repository name:
@@ -173,8 +205,8 @@ const CreateDistribution = () => {
       {repo?.description && token?.symbol && amountComplete && (
         <div>
           {createDistributionResponse ? (
-            <div>
-              <p className="font-bold">Distribution deployed:</p>
+            <div className="mb-4">
+              <p className="font-bold">Contract addresses:</p>
               <p>Worktree: {treeAddress}</p>
               <p>Claim module: {claimAddress}</p>
             </div>
@@ -182,7 +214,7 @@ const CreateDistribution = () => {
             <button
               className="py-2 px-4 bg-blue-500 text-white font-bold rounded-xl hover:cursor-pointer hover:bg-blue-600"
               onClick={async () => {
-                createDistribution({
+                await createDistribution({
                   args: [
                     salt,
                     formatBytes32String(""),
@@ -195,6 +227,11 @@ const CreateDistribution = () => {
               {createDistributionIsLoading ? "Deploying..." : "Deploy"}
             </button>
           )}
+        </div>
+      )}
+      {distributionSaved && (
+        <div className="w-1/4 text-center py-2 px-4 bg-green-500 text-white font-bold rounded-xl">
+          Deployed
         </div>
       )}
     </div>

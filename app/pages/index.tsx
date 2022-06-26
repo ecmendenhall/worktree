@@ -16,10 +16,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Full>
-        <div className="grid md:grid-cols-3 md:grid-rows-1 gap-4 grid-cols-1">
+        <div className="grid md:px-16 md:grid-cols-2 md:grid-rows-2 gap-6 grid-cols-1">
           <MenuCard
             title="Create"
             description="Create a new contributor distribution"
+            url="/distributions/create"
+          />
+          <MenuCard
+            title="Finalize"
+            description="Finalize an open distribution"
             url="/distributions/create"
           />
           <MenuCard

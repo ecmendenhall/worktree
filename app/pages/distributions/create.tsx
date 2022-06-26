@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
-import { getCsrfToken, signIn, useSession } from 'next-auth/react';
-import { SiweMessage } from 'siwe';
-import { useAccount, useNetwork, useSignMessage } from 'wagmi';
-
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useSession } from 'next-auth/react';
+import { useNetwork } from 'wagmi';
 
 import Connect from '../../components/connect';
 import CreateDistribution from '../../components/create-distribution';
@@ -11,6 +8,7 @@ import SiweButton from '../../components/siwe-button';
 import Full from '../../layouts/full';
 
 const Create: NextPage = () => {
+  const { activeChain: chain } = useNetwork();
   const { data: session } = useSession();
 
   return (
@@ -23,7 +21,11 @@ const Create: NextPage = () => {
               Create a distribution
             </h2>
             <div className="flex flex-row place-content-center">
-              {session ? <CreateDistribution /> : <SiweButton />}
+              {session?.address && chain?.id ? (
+                <CreateDistribution chainId={chain.id} />
+              ) : (
+                <SiweButton />
+              )}
             </div>
           </div>
         </div>

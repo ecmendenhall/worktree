@@ -66,7 +66,7 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
       async session({ session, token }) {
-        session.address = token.sub;
+        session.address = token.sub || "";
         return session;
       },
     },
