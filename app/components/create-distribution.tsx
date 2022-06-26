@@ -1,11 +1,11 @@
-import { randomBytes } from "crypto";
-import { ethers } from "ethers";
-import { formatBytes32String, parseUnits } from "ethers/lib/utils";
-import React, { useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { useContractEvent, useContractWrite, useToken } from "wagmi";
+import { randomBytes } from 'crypto';
+import { ethers } from 'ethers';
+import { formatBytes32String, parseUnits } from 'ethers/lib/utils';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { useContractEvent, useContractWrite, useToken } from 'wagmi';
 
-import contracts from "../config/contracts";
+import contracts from '../config/contracts';
 
 interface Props {
   chainId: number;
@@ -66,19 +66,18 @@ const CreateDistribution = ({ chainId }: Props) => {
     writeAsync: createDistribution,
   } = useContractWrite(
     {
-      addressOrName: contracts.factory.address,
+      addressOrName: contracts.factory.address[chainId],
       contractInterface: contracts.factory.abi,
     },
     "createERC20"
   );
   useContractEvent(
     {
-      addressOrName: contracts.factory.address,
+      addressOrName: contracts.factory.address[chainId],
       contractInterface: contracts.factory.abi,
     },
     "NewTree",
     (event) => {
-      console.log("Event: ", event);
       const [createdSalt, treeAddress, claimAddress] = event;
       console.log(salt, createdSalt, treeAddress, claimAddress);
       if (createdSalt === salt) {
