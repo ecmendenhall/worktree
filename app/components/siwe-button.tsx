@@ -1,8 +1,8 @@
-import { getCsrfToken, signIn } from 'next-auth/react';
-import { SiweMessage } from 'siwe';
-import { useAccount, useNetwork, useSignMessage } from 'wagmi';
+import { getCsrfToken, signIn } from "next-auth/react";
+import { SiweMessage } from "siwe";
+import { useAccount, useNetwork, useSignMessage } from "wagmi";
 
-import Connect from './connect';
+import Connect from "./connect";
 
 const SiweButton = () => {
   const { data: account } = useAccount();

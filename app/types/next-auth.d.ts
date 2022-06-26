@@ -1,7 +1,10 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import NextAuth, { DefaultSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    address: string;
+    user: {
+      id: string | undefined;
+      address: string | undefined;
+    } & DefaultSession["user"];
   }
 }

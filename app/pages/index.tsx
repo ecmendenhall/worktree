@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
-import Head from 'next/head';
+import Head from "next/head";
 
-import MenuCard from '../components/menu-card';
-import Full from '../layouts/full';
+import MenuCard from "../components/menu-card";
+import Full from "../layouts/full";
 
 const Home: NextPage = () => {
   return (
@@ -23,9 +23,9 @@ const Home: NextPage = () => {
             url="/distributions/create"
           />
           <MenuCard
-            title="Finalize"
-            description="Finalize an open distribution"
-            url="/distributions/create"
+            title="Update"
+            description="Update tree for an open distribution"
+            url="/distributions/update"
           />
           <MenuCard
             title="Register"
@@ -35,7 +35,7 @@ const Home: NextPage = () => {
           <MenuCard
             title="Claim"
             description="Claim a contributor distribution"
-            url="/distributions/register"
+            url="/distributions/claim"
           />
         </div>
       </Full>

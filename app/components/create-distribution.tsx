@@ -1,11 +1,11 @@
-import { randomBytes } from 'crypto';
-import { ethers } from 'ethers';
-import { formatBytes32String, parseUnits } from 'ethers/lib/utils';
-import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { useContractEvent, useContractWrite, useToken } from 'wagmi';
+import { randomBytes } from "crypto";
+import { ethers } from "ethers";
+import { formatBytes32String, parseUnits } from "ethers/lib/utils";
+import React, { useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { useContractEvent, useContractWrite, useToken } from "wagmi";
 
-import contracts from '../config/contracts';
+import contracts from "../config/contracts";
 
 interface Props {
   chainId: number;
@@ -14,6 +14,7 @@ interface Props {
 interface Distribution {
   treeAddress: string;
   claimAddress: string;
+  repoName: string;
   chainId: number;
 }
 
@@ -22,13 +23,13 @@ const getSalt = () => {
 };
 
 const saveDistribution = async (distribution: Distribution) => {
-  const { treeAddress, claimAddress, chainId } = distribution;
+  const { treeAddress, claimAddress, repoName, chainId } = distribution;
   const res = await fetch("/api/distributions/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ treeAddress, claimAddress, chainId }),
+    body: JSON.stringify({ treeAddress, claimAddress, repoName, chainId }),
   });
   return res.status;
 };
@@ -46,12 +47,7 @@ const CreateDistribution = ({ chainId }: Props) => {
     address: tokenAddress,
     enabled: false,
   });
-  const {
-    isLoading: repoIsLoading,
-    error: repoError,
-    data: repo,
-    refetch: fetchRepo,
-  } = useQuery(
+  const { data: repo, refetch: fetchRepo } = useQuery(
     "repo",
     async () => {
       const repo = await fetch(`https://api.github.com/repos/${repoName}`);
@@ -91,6 +87,7 @@ const CreateDistribution = ({ chainId }: Props) => {
         save.mutate({
           treeAddress,
           claimAddress,
+          repoName,
           chainId,
         });
       }
@@ -207,8 +204,10 @@ const CreateDistribution = ({ chainId }: Props) => {
           {createDistributionResponse ? (
             <div className="mb-4">
               <p className="font-bold">Contract addresses:</p>
-              <p>Worktree: {treeAddress}</p>
-              <p>Claim module: {claimAddress}</p>
+              <p>Worktree: {treeAddress ? treeAddress : "Deploying..."}</p>
+              <p>
+                Claim module: {claimAddress ? claimAddress : "Deploying..."}
+              </p>
             </div>
           ) : (
             <button

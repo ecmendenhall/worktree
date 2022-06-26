@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from "next-auth/react";
 
 const Register: NextPage = () => {
   const { data: session } = useSession();

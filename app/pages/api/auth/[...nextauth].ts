@@ -1,15 +1,21 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
-import { getCsrfToken } from 'next-auth/react';
-import { SiweMessage } from 'siwe';
+import { NextApiRequest, NextApiResponse } from "next";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
+import { getCsrfToken } from "next-auth/react";
+import { SiweMessage } from "siwe";
 
 export default async function auth(req: NextApiRequest, res: NextApiResponse) {
   const providers = [
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.login,
+        };
+      },
     }),
     CredentialsProvider({
       name: "Ethereum",
@@ -65,8 +71,21 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
     },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
+      async jwt({ token, account }) {
+        if (account?.provider) {
+          token.provider = account.provider;
+        }
+        return token;
+      },
       async session({ session, token }) {
-        session.address = token.sub || "";
+        if (session?.user) {
+          if (token.provider === "credentials") {
+            session.user.address = token.sub;
+          }
+          if (token.provider === "github") {
+            session.user.id = token.sub;
+          }
+        }
         return session;
       },
     },

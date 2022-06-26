@@ -15,16 +15,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const token = await getToken({ req, secret });
     if (token) {
       try {
-        console.log(req.body);
-        const { chainId, repoName, treeAddress, claimAddress } = req.body;
-        const dbResponse = await supabase.from("distributions").insert({
-          chain_id: chainId,
-          repo: repoName,
-          created_by: token.sub,
-          tree_address: treeAddress,
-          claim_address: claimAddress,
+        const { address } = req.query;
+        const { username, publicId } = req.body;
+        if (token.name !== username) return res.status(403).end();
+        const distroResponse = await supabase
+          .from("distributions")
+          .select()
+          .eq("tree_address", address);
+        const distroBody = distroResponse.body || [];
+        const { id } = distroBody[0];
+        const commitmentResponse = await supabase.from("commitments").insert({
+          distribution_id: id,
+          username: username,
+          public_id: publicId,
         });
-        console.log(dbResponse);
+        console.log(commitmentResponse);
         return res.status(201).end();
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);

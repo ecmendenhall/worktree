@@ -1,12 +1,12 @@
-import '../styles/globals.css';
-import '@rainbow-me/rainbowkit/styles.css';
+import "../styles/globals.css";
+import "@rainbow-me/rainbowkit/styles.css";
 
-import { SessionProvider } from 'next-auth/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
+import { SessionProvider } from "next-auth/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { publicProvider } from "wagmi/providers/public";
 
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 import type { AppProps } from "next/app";
 const queryClient = new QueryClient();
